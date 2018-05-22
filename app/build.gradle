@@ -1,0 +1,110 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
+    defaultConfig {
+        applicationId "com.hzq.replugindemo"
+        minSdkVersion 17
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+//    signingConfigs {
+//        debug {
+//            storeFile file('/sinalcs.keystore')
+//            storePassword "lcs123456"
+//            keyAlias "sinalcs"
+//            keyPassword "lcs123456"
+//        }
+//        release {
+//            storeFile file('/sinalcs.keystore')
+//            storePassword "lcs123456"
+//            keyAlias "sinalcs"
+//            keyPassword "lcs123456"
+//            v2SigningEnabled false
+//        }
+//    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+//            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+// ATTENTION!!! Must be PLACED AFTER "android{}" to read the applicationId
+apply plugin: 'replugin-host-gradle'
+
+/**
+ * 配置项均为可选配置，默认无需添加
+ * 更多可选配置项参见replugin-host-gradle的RepluginConfig类
+ * 可更改配置项参见 自动生成RePluginHostConfig.java
+ */
+repluginHostConfig {
+    /**
+     * 是否使用 AppCompat 库
+     * 不需要个性化配置时，无需添加
+     */
+    useAppCompat = true
+    /**
+     * 背景不透明的坑的数量
+     * 不需要个性化配置时，无需添加
+     */
+//    countNotTranslucentStandard = 6
+//    countNotTranslucentSingleTop = 2
+//    countNotTranslucentSingleTask = 3
+//    countNotTranslucentSingleInstance = 2
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:26.+'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    testCompile 'junit:junit:4.12'
+
+//    compile project(':common-lib')
+//    compile project(':router')
+//    compile ("com.github.yjfnypeu.Router-RePlugin:host:0.6",{
+//        exclude group: 'com.qihoo360.replugin', module: 'replugin-host-lib'
+//    })
+
+    compile 'com.qihoo360.replugin:replugin-host-lib:2.2.1'
+}
+
+def moduleName=[':plugin1']
+
+afterEvaluate {
+    android.buildTypes.all{ buildType ->
+        println 'buildType='+buildType
+        println 'buildType capitalize='+buildType.name.capitalize()
+        moduleName.each {curMName->
+            println 'TTT='+"${curMName}:assemble${buildType.name.capitalize()}"
+            curMName=curMName.replace(':','')
+            def subAssemble=rootProject.project(curMName).tasks.
+                    getByPath(":$curMName:assemble${buildType.name.capitalize()}")
+            subAssemble.doLast {
+                println '----==doLast=='
+                println "../$curMName/build/outputs/apk/$curMName-${buildType.name}.apk"
+                copy{
+                    from "../$curMName/build/outputs/apk/$curMName-${buildType.name}.apk"
+                    into "../app/src/main/assets/plugins/"
+                    rename("$curMName-${buildType.name}.apk","${curMName}.jar")
+                }
+            }
+            def preAssemble=tasks.getByPath(":${project.name}:pre${buildType.name.capitalize()}Build")
+            //assemble 前，先卸载对应版本，防止Replugin 插件的改动不更新
+            tasks.getByPath(":${project.name}:assemble${buildType.name.capitalize()}").dependsOn "uninstall${buildType.name.capitalize()}"
+            preAssemble.dependsOn subAssemble
+        }
+    }
+}
+

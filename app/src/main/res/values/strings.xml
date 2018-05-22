@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">RePluginDemo</string>
+    <string name="startDemo1">Start plugin demo1</string>
+    <string name="startDemo3">Start Kotlin Plugin (demo3) </string>
+    <string name="startDemo1ForResult">Start plugin demo1(forResult)</string>
+    <string name="startDemo1LoadFragment">Start plugin demo1(Fragment from plugin1)</string>
+    <string name="startDemo1LoadFragment_v4">Start plugin demo1(Fragment from plugin1_v4)</string>
+    <string name="installPluginFromAssets">Install or update external plugin</string>
+</resources>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/processName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="当前进程名："/>
+
+    <Button
+        android:id="@+id/btn_start_plugin1"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:text="@string/startDemo1" />
+
+    <Button
+        android:id="@+id/btn_start_plugin_for_result"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:text="@string/startDemo1ForResult" />
+
+    <Button
+        android:id="@+id/btn_load_fragment_from_plugin1"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:text="@string/startDemo1LoadFragment" />
+
+    <Button
+        android:id="@+id/btn_load_fragment_from_plugin1_v4"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:text="@string/startDemo1LoadFragment_v4" />
+
+    <Button
+        android:id="@+id/getPlugin1Data"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:text="测试获取插件中的数据" />
+
+</LinearLayout>
